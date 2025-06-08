@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from './core/logger/logger.service';
+import { CacheService } from './core/cache/cache.service';
 
 @Injectable()
 export class AppService {
   private context = `AppService`;
-  constructor(private readonly logger: LoggerService) {}
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly cacheService: CacheService,
+  ) {}
 
-  getHello() {
+  async getHello() {
     this.logger.log(`calling from inside of app service`, this.context, {
       id: 1,
     });
-    return 'Hello';
+
+    await this.cacheService.set('key', 'SAMPLE VAL', 3000);
+
+    console.log('Cache Value: ', await this.cacheService.get('key'));
+    return 'Hello World!';
   }
 }
