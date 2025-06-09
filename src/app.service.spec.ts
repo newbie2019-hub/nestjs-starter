@@ -1,54 +1,56 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from './app.service';
-import { CoreModule } from './core/core.module';
 import { INestApplication } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Keyv } from 'cacheable';
+import { LoggerService } from './core/logger/logger.service';
+import { createMock } from '@golevelup/ts-jest';
+import { DatabaseService } from './database/database.service';
+import { CacheService } from './core/cache/cache.service';
 
 describe('AppService', () => {
   let appService: AppService;
   let app: INestApplication;
+  // let cacheService: DeepMocked<CacheService>;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [CoreModule],
-      providers: [AppService],
+      providers: [
+        AppService,
+        {
+          provide: LoggerService,
+          useValue: createMock<LoggerService>(), //Fake instance
+        },
+        {
+          provide: DatabaseService,
+          useValue: createMock<DatabaseService>(), //Fake instance
+        },
+        {
+          provide: CacheService,
+          useValue: createMock<CacheService>(), //Fake instance
+        },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init(); // Initialize the Nest application
+    await app.init();
 
     appService = app.get<AppService>(AppService);
+    // cacheService = app.get(CacheService);
   });
 
   afterAll(async () => {
     if (app) {
-      const cacheManager = app.get<Cache>(CACHE_MANAGER);
-      const stores = (cacheManager as any).store?.stores;
-
-      if (Array.isArray(stores)) {
-        for (const store of stores) {
-          if (store && typeof store?.disconnect === 'function') {
-            try {
-              await (store as Keyv).disconnect();
-            } catch (error) {
-              console.error(
-                'Error disconnecting Keyv Redis in test teardown:',
-                error,
-              );
-            }
-          }
-        }
-      }
-
-      // 3. Close the NestJS application instance
       await app.close();
     }
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', async () => {
-      expect(await appService.getHello()).toBe('Hello World!');
+    it('should return "Hello World"', async () => {
+      // If function returns something from a service
+      // cacheService.get.mockResolvedValue(`SAMPLE VAL`);
+      // const res = await appService.getHello();
+      // expect(res).toBe('SAMPLE VAL');
+
+      expect(await appService.getHello()).toBe('Hello World');
     });
   });
 });

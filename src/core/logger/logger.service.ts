@@ -7,8 +7,11 @@ export class LoggerService implements NestLogger {
   private logger: winston.Logger;
 
   constructor(private readonly configService: ConfigService) {
-    const isDevelopment =
-      this.configService.getOrThrow(`environment`) === `development`;
+    const environment = this.configService.getOrThrow<string>('environment');
+    const isDevelopment = environment === `development`;
+    const isTesting = environment === `testing`;
+
+    if (isTesting) return;
 
     const { timestamp, json, combine, colorize, printf } = winston.format;
 

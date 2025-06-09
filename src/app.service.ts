@@ -16,8 +16,7 @@ export class AppService {
     });
 
     await this.cacheService.set('key', 'SAMPLE VAL', 3000);
-
-    console.log('Cache Value: ', await this.cacheService.get('key'));
-    return 'Hello World!';
+    // const res = await this.cacheService.get('key');
+    return 'Hello World';
   }
 }
