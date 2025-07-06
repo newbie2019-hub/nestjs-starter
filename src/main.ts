@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import './services/sentry';
 import helmet from 'helmet';
+
 import { CustomValidationPipe } from './common/validation/custom-validation.pipe';
 import { LoggerService } from './core/logger/logger.service';
 

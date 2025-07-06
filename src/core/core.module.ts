@@ -10,11 +10,13 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { createKeyv, Keyv } from '@keyv/redis';
 import { CacheableMemory } from 'cacheable';
 import { CacheService } from './cache/cache.service';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 // By making it global, any exports include will be available to use in any constructor
 @Global()
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // Registers config module as global module
       load: [config],

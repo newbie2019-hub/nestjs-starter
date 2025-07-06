@@ -21,6 +21,7 @@ export class LoggerMiddleware implements NestMiddleware {
         this.logger.log(logMsg, 'HTTP', logData);
       }
     });
+
     next();
   }
 }
