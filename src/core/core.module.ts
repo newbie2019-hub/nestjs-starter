@@ -30,7 +30,7 @@ import { SentryModule } from '@sentry/nestjs/setup';
               store: new CacheableMemory({ ttl: 5 * 1000, lruSize: 5000 }),
             }),
             createKeyv(
-              `redis://${config.get(`redis.host`)}:${config.get(`redis.port`)}`,
+              `redis://${config.get<string>(`redis.host`)}:${config.get(`redis.port`)}`,
             ),
           ],
           ttl: 5 * 1000, // 5 seconds

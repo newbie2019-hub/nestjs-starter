@@ -1,7 +1,7 @@
 import {
   ValidationPipe,
-  BadRequestException,
   ValidationPipeOptions,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 
@@ -43,9 +43,9 @@ export class CustomValidationPipe extends ValidationPipe {
           }
         });
 
-        throw new BadRequestException({
+        throw new UnprocessableEntityException({
           message: result,
-          error: 'Bad Request',
+          error: 'Unprocessable Entity',
           statusCode: 422,
         });
       },
